@@ -6,17 +6,16 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  username  String   @unique
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  username  String    @unique
   password  String
-
-  products Product[]
+  products  Product[]
 }
 
 model Product {
@@ -26,18 +25,20 @@ model Product {
   belongsToId String
   belongsTo   User     @relation(fields: [belongsToId], references: [id])
   updates     Update[]
+
+  @@unique([id, belongsToId])
 }
 
 enum UPDATE_STATUS {
   IN_PROGRESS
   SHIPPED
-  DEPREACATED
+  DEPRECATED
 }
 
 model Update {
   id           String        @id @default(uuid())
   createdAt    DateTime      @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime      @updatedAt
   title        String
   body         String
   status       UPDATE_STATUS @default(IN_PROGRESS)
@@ -49,12 +50,11 @@ model Update {
 }
 
 model UpdatePoint {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-
-  name        String @db.VarChar(255)
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  name        String   @db.VarChar(255)
   description String
   updateId    String
-  update      Update @relation(fields: [updateId], references: [id])
+  update      Update   @relation(fields: [updateId], references: [id])
 }
