@@ -53,6 +53,11 @@ router.post('/updatepoint',
   body('updateId').exists().isString(),
   () => {}
 )
-router.delete('/updatepoint/:id', () => {})
+router.delete('/updatepoint/:id', () => { })
+
+router.use((err, req, res, next) => {
+  console.log(err)
+  res.json({message: 'In router handler'})
+})
 
 export default router
